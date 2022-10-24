@@ -12,8 +12,8 @@ from tensorflow.keras.callbacks import TensorBoard, ModelCheckpoint
 SEQ_LEN = 60
 FUTURE_PERIOD_PREDICT = 3
 RATIO_TO_PREDICT = "LTC-USD"
-EPOCHS = 1 # how many passes through our data
-BATCH_SIZE = 128 
+EPOCHS = 5 # how many passes through our data
+BATCH_SIZE = 64 
 NAME = f"{SEQ_LEN}-SEQ-{FUTURE_PERIOD_PREDICT}-PRED-{int(time.time())}"
 
 def classify(current, future):
