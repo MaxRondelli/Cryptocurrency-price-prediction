@@ -9,17 +9,17 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout, LSTM, BatchNormalization
 from tensorflow.keras.callbacks import TensorBoard, ModelCheckpoint
 
-SEQ_LEN = 60
-FUTURE_PERIOD_PREDICT = 3
+SEQ_LEN = 60 # How long of a preceeding sequence to collect for RNN
+FUTURE_PERIOD_PREDICT = 3 # How far into the future are we trying to predict?
 RATIO_TO_PREDICT = "LTC-USD"
 EPOCHS = 5 # how many passes through our data
-BATCH_SIZE = 64 
+BATCH_SIZE = 64 # how many batches? Try smaller batch if you're getting OOM (out of memory) errors
 NAME = f"{SEQ_LEN}-SEQ-{FUTURE_PERIOD_PREDICT}-PRED-{int(time.time())}"
 
 def classify(current, future):
-    if float(future) > float(current):
-        return 1  # 1 means we should buy it.
-    else:
+    if float(future) > float(current): # if the future price is higher than the current, that's a buy, or a 1
+        return 1 
+    else: # otherwise... it's a 0!
         return 0
 
 def preprocess_df(df):
@@ -33,7 +33,7 @@ def preprocess_df(df):
 
     df.dropna(inplace=True)
 
-    sequential_data = []
+    sequential_data = []  # this is a list that will CONTAIN the sequences
     # Wait until predates has sixty values and then from there just keep populating it
     prev_days = deque(maxlen=SEQ_LEN)
 
@@ -74,7 +74,7 @@ def preprocess_df(df):
     return np.array(X), Y
 
 main_df = pd.DataFrame()
-ratios = ["BTC-USD", "LTC-USD", "ETH-USD", "BCH-USD"]
+ratios = ["BTC-USD", "LTC-USD", "ETH-USD", "BCH-USD"] # the 4 ratios we want to consider
 
 for ratio in ratios:
     dataset = f"crypto_data/{ratio}.csv"
