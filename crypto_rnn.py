@@ -12,9 +12,11 @@ from tensorflow.keras.callbacks import TensorBoard, ModelCheckpoint
 SEQ_LEN = 60 # How long of a preceeding sequence to collect for RNN
 FUTURE_PERIOD_PREDICT = 3 # How far into the future are we trying to predict?
 RATIO_TO_PREDICT = "LTC-USD"
-EPOCHS = 5 # how many passes through our data
+EPOCHS = 10 # how many passes through our data
 BATCH_SIZE = 64 # how many batches? Try smaller batch if you're getting OOM (out of memory) errors
 NAME = f"{SEQ_LEN}-SEQ-{FUTURE_PERIOD_PREDICT}-PRED-{int(time.time())}"
+
+print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
 
 def classify(current, future):
     if float(future) > float(current): # if the future price is higher than the current, that's a buy, or a 1
@@ -109,6 +111,7 @@ print(f"VALIDATION Dont buys: {validation_y.count(0)}, buys: {validation_y.count
 
 # -------------- Model ----------------
 model = Sequential()
+
 model.add(LSTM(128, input_shape = (train_x.shape[1:]), return_sequences = True))
 model.add(Dropout(0.2))
 model.add(BatchNormalization())
@@ -124,7 +127,7 @@ model.add(BatchNormalization())
 model.add(Dense(32, activation = "relu"))
 model.add(Dropout(0.2))
 
-model.add(Dense(2, activation = "softmax"))
+model.add(Dense(2, activation = "softmax")) # output layer 
 
 opt = tf.keras.optimizers.Adam(lr = 0.001, decay = 1e-6)
 
